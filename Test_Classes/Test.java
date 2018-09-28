@@ -4,8 +4,11 @@ public class B{
     public B(){
         data = "salam";
     }
+    public void Bbbb(){
+        //data = "salam";
+    }
     private int add(int i, int j){
-        if(k<3){
+        if(i<3){
             i = 6;
             j = 7;
         }

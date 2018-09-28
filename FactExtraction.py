@@ -36,37 +36,21 @@ class FactExtractor:
                     new_class.attributes.append(new_attribute)
             return new_class
 
+        class_attribute_names = None
+
         @staticmethod
         def make_method(method: plyj.MethodDeclaration, base_class: Class):
             new_method = Method()
             new_method.name = method.name
             new_method.access_level = method.modifiers[0]
-            class_attribute_names = list(map(lambda x: x.name, base_class.attributes))
+            FactExtractor.class_attribute_names = list(map(lambda x: x.name, base_class.attributes))
 
             if 'parameters' in method._fields:
                 for p in method.parameters:
                     new_attribute = FactExtractor.make_attribute(p)
                     new_method.parameters.append(new_attribute)
             if method.body is not None:
-                for b in method.body:
-                    # Method Invocation: data of method and input and body needed
-                    if isinstance(b, plyj.MethodInvocation):
-                        new_method.invocation.append(b)
-                        # If this invocation use one of class attribute
-                        for a in b.arguments:
-                            if a.value in class_attribute_names:
-                                new_method.attributes.append(Attribute(a.value))
-                    # Assignment: should search for class attribute in lhs and rhs
-                    elif isinstance(b, plyj.Expression):
-                        attribute_list = FactExtractor.get_expression_attribute(b)
-                        for a in attribute_list:
-                            if a.name in class_attribute_names:
-                                new_method.attributes.append(a)
-                    elif isinstance(b, plyj.Statement):
-                        attribute_list = FactExtractor.get_statement_attribute(b, new_method)
-                        for a in attribute_list:
-                            if a.name in class_attribute_names:
-                                new_method.attributes.append(a)
+                FactExtractor.make_body(method.body, new_method)
             return new_method
 
         @staticmethod
@@ -94,7 +78,7 @@ class FactExtractor:
             return attribute
 
         @staticmethod
-        def get_statement_attribute(state: plyj.Statement, method: Method):
+        def get_statement_attribute(state: plyj.Statement, new_method: Method):
             if state is None:
                 return None
             attribute = list()
@@ -108,13 +92,34 @@ class FactExtractor:
                     attribute.extend(FactExtractor.get_expression_attribute(predicate))
             elif isinstance(state, plyj.While):
                 attribute.extend(FactExtractor.get_expression_attribute(state.predicate))
-                FactExtractor.get_expression_attribute(state.body, method)
-                print(state)
-
+                if isinstance(state.body, plyj.Expression):
+                    attribute.extend(FactExtractor.get_expression_attribute(state.body))
+                else:
+                    FactExtractor.make_body(state.body, new_method)
             return attribute
 
-        # @staticmethod
-        # def make_body(body, method: Method):
+        @staticmethod
+        def make_body(body, new_method: Method):
+            for b in body:
+                # Method Invocation: data of method and input and body needed
+                if isinstance(b, plyj.MethodInvocation):
+                    new_method.invocation.append(b)
+                    # If this invocation use one of class attribute
+                    for a in b.arguments:
+                        if a.value in FactExtractor.class_attribute_names:
+                            new_method.attributes.append(Attribute(a.value))
+                # Assignment: should search for class attribute in lhs and rhs
+                elif isinstance(b, plyj.Expression):
+                    attribute_list = FactExtractor.get_expression_attribute(b)
+                    for a in attribute_list:
+                        if a.name in FactExtractor.class_attribute_names:
+                            new_method.attributes.append(a)
+                elif isinstance(b, plyj.Statement):
+                    attribute_list = FactExtractor.get_statement_attribute(b, new_method)
+                    for a in attribute_list:
+                        if a.name in FactExtractor.class_attribute_names:
+                            new_method.attributes.append(a)
+            return
 
         @staticmethod
         def make_attribute(attribute: plyj.FieldDeclaration):

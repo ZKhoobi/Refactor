@@ -40,6 +40,11 @@ class Cohesion:
                     ich += len(i.arguments) + 1
         return ich
 
-    # @staticmethod
-    # def get_LCOM5(c: Class):
-
+    @staticmethod
+    def get_LCOM5(c: Class):
+        attribute_of_method_count = 0
+        for m in c.methods:
+            attribute_of_method_count += len(m.attributes)
+        numerator = float(len(c.methods)) - float(attribute_of_method_count)/float(len(c.attributes))
+        denominator = float(len(c.methods) - 1)
+        return numerator / denominator

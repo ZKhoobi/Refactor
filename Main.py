@@ -1,4 +1,5 @@
 from Cohesion import Cohesion
+from Complexity import Complexity
 from Coupling import Coupling
 from FactExtraction import FactExtractor
 
@@ -14,10 +15,16 @@ ipc = 0
 rfc = 0
 tcc = 0
 ich = 0
+lcom5 = 0
+wmc = 0
+nom = 0
 for c in model:
     rfc += Coupling.get_RFC(c)
     ipc += Coupling.get_ICP(c)
     tcc += Cohesion.get_TCC(c)
     ich += Cohesion.get_ICH(c)
+    lcom5 += Cohesion.get_LCOM5(c)
+    wmc += Complexity.get_WMC(c)
+    nom += Complexity.get_NOM(c)
 print(model)
 
