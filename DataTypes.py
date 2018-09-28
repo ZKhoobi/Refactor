@@ -9,7 +9,7 @@ class Attribute(Node):
     type: str
     is_static: bool
 
-    def __init__(self, name = ""):
+    def __init__(self, name=""):
         Node.__init__(self)
         self.type = ""
         self.is_static = False

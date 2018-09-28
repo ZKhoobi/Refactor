@@ -1,9 +1,19 @@
 public class B{
     String data;
+    int k;
     public B(){
         data = "salam";
     }
     private int add(int i, int j){
+        if(k<3){
+            i = 6;
+            j = 7;
+        }
+        while(i<6){
+        i++;
+        j++;
+        }
+
         i = i + j;
         return i;
     }
