@@ -5,7 +5,7 @@ class Complexity:
 
     # @staticmethod
     # def get_WMC(c: Class):
-    #     print("lll")
+    #     this metric has not clear for me yet
 
     @staticmethod
     def get_NOM(c: Class):
@@ -17,5 +17,5 @@ class Complexity:
         if nom <= 40:
             return 1
         if nom <= 50:
-            return float(50 - nom) / 10
+            return float(50 - nom) / 10.0
         return 0

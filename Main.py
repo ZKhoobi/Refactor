@@ -4,6 +4,8 @@ from Coupling import Coupling
 from FactExtraction import FactExtractor
 
 # Step 1: Extract Model
+from Stability import Stability
+
 fact_extractor = FactExtractor("Test_Classes/")
 # fact_extractor = FactExtractor("source_files/")
 model = fact_extractor.make_model()
@@ -18,6 +20,7 @@ ich = 0
 lcom5 = 0
 wmc = 0
 nom = 0
+instability = 0
 for c in model:
     rfc += Coupling.get_RFC(c)
     ipc += Coupling.get_ICP(c)
@@ -26,5 +29,6 @@ for c in model:
     lcom5 += Cohesion.get_LCOM5(c)
     # wmc += Complexity.get_WMC(c)
     nom += Complexity.get_NOM(c)
+    instability += Stability.get_instability(c, model)
 print(model)
 
