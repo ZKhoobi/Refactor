@@ -24,7 +24,7 @@ for c in model:
     tcc += Cohesion.get_TCC(c)
     ich += Cohesion.get_ICH(c)
     lcom5 += Cohesion.get_LCOM5(c)
-    wmc += Complexity.get_WMC(c)
+    # wmc += Complexity.get_WMC(c)
     nom += Complexity.get_NOM(c)
 print(model)
 
